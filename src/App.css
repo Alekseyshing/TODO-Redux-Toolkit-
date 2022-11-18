@@ -1,0 +1,15 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.delete {
+  cursor: pointer;
+  color: red;
+  margin-left: 5px;
+}
+input:checked + span {
+  text-decoration: line-through
+}
