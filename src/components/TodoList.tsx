@@ -1,19 +1,16 @@
-import { ITodos } from "../App"
 import { TodoItem } from "./TodoItem"
-
-export interface ITodoList {
-  todos: ITodos[],
-  removeTodo: (id: string) => void,
-  toggleTodoCompleted: (id: string) => void
-}
+import { useAppDispatch, useAppSelector } from "../store/redux"
+import { removeTodo, toggleTodoComplete } from "../store/todoSlice"
 
 
-export const TodoList = ({ todos, removeTodo, toggleTodoCompleted }: ITodoList) => {
+export const TodoList = () => {
+  const todos = useAppSelector(state => state.todos.todos)
+  const dispatch = useAppDispatch()
   return (
     <ul>
       {todos.map(item => <TodoItem key={item.id}
-        removeTodo={removeTodo}
-        toggleTodoCompleted={toggleTodoCompleted}
+        removeTodo={dispatch(removeTodo)}
+        toggleTodoCompleted={dispatch(toggleTodoComplete)}
         {...item} />)}
     </ul>
   )
