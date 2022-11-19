@@ -1,5 +1,6 @@
+import { useTypedDispatch } from "../store";
 import { useAppDispatch } from "../store/redux"
-import { removeTodo, toggleTodoComplete } from "../store/todoSlice"
+import { deleteTodo, toggleStatus } from "../store/todoSlice"
 
 
 export interface ITodo {
@@ -10,18 +11,19 @@ export interface ITodo {
 
 
 export const TodoItem = ({ id, completed, title }: ITodo) => {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
+  const typedDispatch = useTypedDispatch();
   return (
     <li key={id}>
       <input
         type="checkbox"
         checked={completed}
-        onChange={() => dispatch(toggleTodoComplete({ id }))}
+        onChange={() => typedDispatch(toggleStatus(id))}
       />
       <span>{title}</span>
       <span
         className='delete'
-        onClick={() => dispatch(removeTodo({ id }))}
+        onClick={() => typedDispatch(deleteTodo(id))}
       >
         &times;
       </span>

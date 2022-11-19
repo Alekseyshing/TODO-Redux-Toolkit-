@@ -4,7 +4,7 @@ import { InputField } from './components/InputField';
 import { TodoList } from './components/TodoList';
 import { useTypedDispatch } from './store';
 import { useAppDispatch, useTypedSelector } from './store/redux';
-import { addTodo, fetchTodos } from './store/todoSlice'
+import { addNewTodo, fetchTodos } from './store/todoSlice'
 
 export interface ITodos {
   id: string,
@@ -19,7 +19,7 @@ function App() {
   const { status, error } = useTypedSelector(state => state.todos);
   const typedDispatch = useTypedDispatch();
   const addTask = () => {
-    dispatch(addTodo({ text }));
+    typedDispatch(addNewTodo(text));
     setText('')
   }
 
