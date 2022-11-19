@@ -4,12 +4,12 @@ import { removeTodo, toggleTodoComplete } from "../store/todoSlice"
 
 export interface ITodo {
   id: string,
-  text: string,
+  title: string,
   completed: boolean,
 }
 
 
-export const TodoItem = ({ id, completed, text }: ITodo) => {
+export const TodoItem = ({ id, completed, title }: ITodo) => {
   const dispatch = useAppDispatch()
   return (
     <li key={id}>
@@ -18,7 +18,7 @@ export const TodoItem = ({ id, completed, text }: ITodo) => {
         checked={completed}
         onChange={() => dispatch(toggleTodoComplete({ id }))}
       />
-      <span>{text}</span>
+      <span>{title}</span>
       <span
         className='delete'
         onClick={() => dispatch(removeTodo({ id }))}

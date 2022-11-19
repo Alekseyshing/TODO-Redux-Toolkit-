@@ -1,16 +1,31 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk, ThunkDispatch, AnyAction } from '@reduxjs/toolkit';
 import { ITodos } from '../App';
 
+export const fetchTodos = createAsyncThunk(
+  'todos/fetchTodos',
+  async function () {
+    const response = await fetch('https://jsonplaceholder.typicode.com/todos')
+
+    const data = response.json();
+
+    return data
+  }
+)
+
 export interface ITodosState {
-  todos: ITodos[]
+  todos: ITodos[],
+  status: string,
+  error: null
 }
 
 const initialState: ITodosState = {
-  todos: []
+  todos: [],
+  status: '',
+  error: null
 }
 
 const todoSlice = createSlice({
-  name: 'todo',
+  name: 'todos',
   initialState,
   reducers: {
     addTodo(state, action) {
@@ -28,6 +43,16 @@ const todoSlice = createSlice({
       toggledTodo!.completed = !toggledTodo?.completed
     }
   },
+  extraReducers: (builder) => {
+    builder.addCase(fetchTodos.pending, (state) => {
+      state.status = "loading";
+      state.error = null;
+    }),
+      builder.addCase(fetchTodos.fulfilled, (state, action) => {
+        state.status = "resolved";
+        state.todos = action.payload;
+      })
+  }
 })
 
 
