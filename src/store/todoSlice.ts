@@ -1,28 +1,34 @@
-import { createSlice, createAsyncThunk, ThunkDispatch, AnyAction } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ITodos } from '../App';
 
-export const fetchTodos = createAsyncThunk(
-  'todos/fetchTodos',
-  async function () {
-    const response = await fetch('https://jsonplaceholder.typicode.com/todos')
-
-    const data = response.json();
-
-    return data
-  }
-)
 
 export interface ITodosState {
   todos: ITodos[],
   status: string,
-  error: null
+  error: string | unknown
 }
 
 const initialState: ITodosState = {
   todos: [],
   status: '',
-  error: null
+  error: ''
 }
+
+export const fetchTodos = createAsyncThunk(
+  'todos/fetchTodos',
+  async function (_, { rejectWithValue }) {
+    try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/todos?_limit=20')
+      if (!response.ok) {
+        throw new Error('Server Error')
+      }
+      const data = response.json();
+      return data
+    } catch (rejectedValueOrSerializedError) {
+      if (rejectedValueOrSerializedError instanceof Error) return rejectWithValue(rejectedValueOrSerializedError.message);
+    }
+  }
+)
 
 const todoSlice = createSlice({
   name: 'todos',
@@ -46,11 +52,15 @@ const todoSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchTodos.pending, (state) => {
       state.status = "loading";
-      state.error = null;
+      state.error = '';
     }),
       builder.addCase(fetchTodos.fulfilled, (state, action) => {
         state.status = "resolved";
         state.todos = action.payload;
+      }),
+      builder.addCase(fetchTodos.rejected, (state, action) => {
+        state.status = "rejected";
+        state.error = action.payload;
       })
   }
 })

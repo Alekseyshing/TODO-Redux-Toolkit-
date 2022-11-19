@@ -3,7 +3,7 @@ import './App.css'
 import { InputField } from './components/InputField';
 import { TodoList } from './components/TodoList';
 import { useTypedDispatch } from './store';
-import { useAppDispatch } from './store/redux';
+import { useAppDispatch, useTypedSelector } from './store/redux';
 import { addTodo, fetchTodos } from './store/todoSlice'
 
 export interface ITodos {
@@ -16,6 +16,7 @@ export interface ITodos {
 function App() {
   const [text, setText] = useState('');
   const dispatch = useAppDispatch();
+  const { status, error } = useTypedSelector(state => state.todos);
   const typedDispatch = useTypedDispatch();
   const addTask = () => {
     dispatch(addTodo({ text }));
@@ -28,7 +29,13 @@ function App() {
 
   return (
     <div className="App">
-      <InputField text={text} setText={setText} handleSubmit={addTask}></InputField>
+      <InputField
+        text={text}
+        setText={setText}
+        handleSubmit={addTask}
+      />
+      {status === 'loading' && <h1>Loading...</h1>}
+      {error && <h2>An Error Ocured: {error}</h2>}
       <TodoList />
     </div>
   )
